@@ -1,0 +1,16 @@
+# Virtual environment — never push this
+venv/
+
+# Python bytecode — auto-generated, not source code
+__pycache__/
+*.pyc
+*.pyo
+
+# Chart output files — generated, not source
+*.png
+
+# Environment variable files — never push API keys
+.env
+
+# VS Code workspace settings
+.vscode/

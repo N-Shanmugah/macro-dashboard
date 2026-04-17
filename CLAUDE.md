@@ -27,11 +27,20 @@ Every function should be explainable in plain English.
 3. **2Y-10Y Spread** — with red shading on inversion periods
 
 ### What `risk_sentiment.py` Produces
-1. **VIX** — fear gauge with zone shading above 30, reference lines at 20 and 30
-2. **DXY** — US Dollar Index with 20-day moving average
+1. **VIX** — fear gauge with red shading above 30, reference lines at 20 (caution) and 30 (stress)
+2. **DXY** — US Dollar Index with 20-day moving average overlay
 3. **Gold** — safe haven demand in USD/oz with amber fill
 
-Style: Bloomberg dark (black background, bright line colours, interpretation keys inside each panel)
+Style: Bloomberg dark (black background, bright line colours)
+Legends: `upper right` on all panels — keeps left side clear for event markers
+Event markers: vertical dotted lines across all three panels; labels on VIX panel only
+
+Current events in `MACRO_EVENTS`:
+- `2024-08-05` — Yen carry unwind
+- `2024-11-05` — US Election (Trump)
+- `2025-04-02` — Liberation Day (tariffs)
+
+To add a new event: append `("YYYY-MM-DD", "Label\nline 2")` to `MACRO_EVENTS` at the top of the script.
 
 ### Data Sources
 - FRED API (`fredapi`) — rates data; key stored as `FRED_API_KEY` environment variable
@@ -103,14 +112,29 @@ The dashboard is intended to grow across multiple sessions. Planned additions in
 ## Chart Style — Bloomberg Dark
 
 All new charts follow this standard:
+
+**Colours**
 - Background: `#0A0A0A` (figure), `#111111` (panel)
 - Text / ticks: `#D0D0D0`
 - Grid: `#2A2A2A`, spines: `#333333`
 - Top and right spines removed for clean look
-- Interpretation keys placed as small grey text *inside* the bottom of each panel (not in the title)
-- `fig.subplots_adjust(top=0.94, bottom=0.06, hspace=0.55)` — do not use `tight_layout()`
-- X-axis date format: `%b '%y` (e.g. `Apr '24`) — compact for laptop screens
 - Colour palette defined at the top of each script as named constants (e.g. `C_VIX`, `C_DXY`)
+
+**Layout**
+- Header: two separate `fig.text()` lines — main title at `y=0.977`, subtitle/date range at `y=0.955`
+- Do NOT use `fig.suptitle()` — it sits too close to the first panel title
+- Do NOT use `tight_layout()` — use `fig.subplots_adjust(top=0.92, bottom=0.06, hspace=0.55)`
+- Panel titles: `fontsize=10`, `fontweight="bold"`, `pad=8`
+- X-axis date format: `%b '%y` (e.g. `Apr '24`) — compact for laptop screens
+
+**Legends**
+- Always `upper right` — keeps the left side clear for event markers
+- No interpretation text lines inside panels — removed as of latest version
+
+**Event markers**
+- `draw_events(ax, series, show_label=True/False)` helper draws dotted vertical lines
+- Labels shown on the first/primary panel only; dotted lines on all panels
+- `get_xaxis_transform()` used for label placement (data-x, axes-y coordinates)
 
 ---
 
